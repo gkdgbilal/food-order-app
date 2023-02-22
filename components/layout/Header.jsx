@@ -4,6 +4,7 @@ import { useState } from "react"
 import Search from "../ui/Search"
 import { GiHamburgerMenu, GiCancel } from 'react-icons/gi'
 import { useRouter } from "next/router"
+import Link from "next/link"
 
 const Header = () => {
     const [isSearchModal, setIsSearchModal] = useState(false)
@@ -18,16 +19,16 @@ const Header = () => {
                 <nav className={`sm:static absolute top-0 left-0 sm:flex hidden sm:w-auto w-full sm:h-auto h-screen sm:text-white text-black sm:bg-transparent bg-white ${isMenuModal === true && "!grid place-content-center"}`}>
                     <ul className="flex gap-x-2 sm:flex-row flex-col">
                         <li className="px-[5px] py-[10px] uppercase hover:text-primary">
-                            <a href="/">Home</a>
+                            <Link href="/">Home</Link>
                         </li>
                         <li className="px-[5px] py-[10px] uppercase hover:text-primary">
-                            <a href="/">Menu</a>
+                            <Link href="/menu">Menu</Link>
                         </li>
                         <li className="px-[5px] py-[10px] uppercase hover:text-primary">
-                            <a href="/">About</a>
+                            <Link href="/about">About</Link>
                         </li>
                         <li className="px-[5px] py-[10px] uppercase hover:text-primary">
-                            <a href="/">Book Table</a>
+                            <Link href="/reservation">Book Table</Link>
                         </li>
                     </ul>
                     {
@@ -42,12 +43,12 @@ const Header = () => {
                     }
                 </nav>
                 <div className="flex gap-x-4 items-center">
-                    <a href="/">
+                    <Link href="/auth/login">
                         <FaUserAlt className="hover:text-primary transition-all" />
-                    </a>
-                    <a href="/">
+                    </Link>
+                    <Link href="/cart">
                         <FaShoppingCart className="hover:text-primary transition-all" />
-                    </a>
+                    </Link>
                     <button
                         onClick={() => setIsSearchModal(true)}
                     >
