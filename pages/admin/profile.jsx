@@ -1,10 +1,12 @@
 import Image from 'next/image'
 import { useState } from 'react'
-import Account from '@/components/profile/Account'
 import Password from '@/components/profile/Password'
-import Order from '@/components/profile/Order'
+import Products from '@/components/admin/Products'
+import Order from '@/components/admin/Order'
+import Category from '@/components/admin/Category'
+import Footer from '@/components/admin/Footer'
 
-const Index = () => {
+const Profile = () => {
 
     const [tabs, setTabs] = useState(0)
 
@@ -15,39 +17,46 @@ const Index = () => {
             <div className='lg:w-80 w-100 flex-shrink-0'>
                 <div className='relative flex flex-col items-center px-10 py-5 border border-b-0'>
                     <Image
-                        src="/images/client2.jpg"
+                        src="/images/admin.png"
                         alt="profile"
                         width={100}
                         height={100}
                         className='rounded-full'
                     />
-                    <b className='text-2xl mt-1'>Bilal Gökdağ</b>
+                    <b className='text-2xl mt-1'>Admin</b>
                 </div>
                 <ul className='w-full text-center font-semibold'>
                     <li
                         className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 0 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(0)}
                     >
-                        <i className='fas fa-home'></i>
-                        <button className='ml-1'>Account</button>
+                        <i className="fa-solid fa-utensils"></i>
+                        <button className='ml-1'>Products</button>
                     </li>
                     <li
                         className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 1 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(1)}
                     >
-                        <i className="fa-solid fa-key"></i>
-                        <button className='ml-1'>Password</button>
+                        <i className="fa-solid fa-motorcycle"></i>
+                        <button className='ml-1'>Orders</button>
                     </li>
                     <li
                         className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 2 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(2)}
                     >
-                        <i className="fa-solid fa-motorcycle"></i>
-                        <button className='ml-1'>Orders</button>
+                        <i className="fa-solid fa-braille"></i>
+                        <button className='ml-1'>Categories</button>
                     </li>
                     <li
                         className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 3 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(3)}
+                    >
+                        <i className="fa-regular fa-window-maximize"></i>
+                        <button className='ml-1'>Footer</button>
+                    </li>
+                    <li
+                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 4 && 'bg-primary text-white'}`}
+                        onClick={() => setTabs(4)}
                     >
                         <i className="fa-solid fa-right-from-bracket"></i>
                         <button className='ml-1'>Exit</button>
@@ -56,21 +65,26 @@ const Index = () => {
             </div>
             {
                 tabs === 0 && (
-                    <Account />
+                    <Products />
                 )
             }
             {
                 tabs === 1 && (
-                    <Password />
+                    <Order />
                 )
             }
             {
                 tabs === 2 && (
-                    <Order />
+                    <Category />
+                )
+            }
+            {
+                tabs === 3 && (
+                    <Footer />
                 )
             }
         </div>
     )
 }
 
-export default Index
+export default Profile
