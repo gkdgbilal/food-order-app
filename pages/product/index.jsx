@@ -1,10 +1,14 @@
 import Title from "@/components/ui/Title"
 import Image from "next/image"
+import { useState } from "react";
 
 const Index = () => {
+    const [prices, setPrices] = useState([10, 20, 30]);
+
+
     return (
-        <div className="flex items-center h-screen gap-20 py-20 flex-wrap">
-            <div className="relative md:flex-1 w-[80%] h-[80%] mx-20">
+        <div className="flex items-center md:h-[calc(100vh_-_88px)] gap-5 py-20 flex-wrap">
+            <div className="relative md:flex-1 md:w-[80%] md:h-[80%] w-[36%] h-[36%] mx-auto">
                 <Image
                     src="/images/f1.png"
                     alt=""
