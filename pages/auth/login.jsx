@@ -3,8 +3,11 @@ import Input from '@/components/form/Input'
 import Title from '@/components/ui/Title'
 import { loginSchema } from "@/schema/login"
 import Link from "next/link"
+import { useSession, signIn } from "next-auth/react"
 
 const Login = () => {
+    const { data: session } = useSession()
+    console.log("session", session)
     const onSubmit = async (values, actions) => {
         await new Promise((resolve) => setTimeout(resolve, 4000))
         actions.resetForm()
@@ -62,9 +65,15 @@ const Login = () => {
                     }
                 </div>
                 <div className="flex flex-col w-full gap-y-3 mt-6">
-                    <button className="btn-primary">Login</button>
-                    <button className="btn-primary !bg-secondary">
-                        <i class="fa-brands fa-github mr-2 text-lg" />
+                    <button className="btn-primary" type="submit">
+                        Login
+                    </button>
+                    <button
+                        className="btn-primary !bg-secondary"
+                        type="button"
+                        onClick={() => signIn("github")}
+                    >
+                        <i className="fa-brands fa-github mr-2 text-lg" />
                         GITHUB
                     </button>
                     <Link href="/auth/register">
