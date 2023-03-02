@@ -1,13 +1,29 @@
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Account from '@/components/profile/Account'
 import Password from '@/components/profile/Password'
 import Order from '@/components/profile/Order'
+import { getSession, signOut } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
-const Index = () => {
-
+const Index = ({ session }) => {
     const [tabs, setTabs] = useState(0)
+    const { push } = useRouter()
 
+    const handleSignOut = () => {
+        if (confirm("Are you sure you want to sign out?")) {
+            signOut({
+                redirect: false,
+            })
+            push("/auth/login")
+        }
+    }
+
+    useEffect(() => {
+        if (!session) {
+            push("/auth/login")
+        }
+    }, [session])
 
 
     return (
@@ -46,8 +62,8 @@ const Index = () => {
                         <button className='ml-1'>Orders</button>
                     </li>
                     <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 3 && 'bg-primary text-white'}`}
-                        onClick={() => setTabs(3)}
+                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all `}
+                        onClick={handleSignOut}
                     >
                         <i className="fa-solid fa-right-from-bracket"></i>
                         <button className='ml-1'>Exit</button>
@@ -71,6 +87,25 @@ const Index = () => {
             }
         </div>
     )
+}
+
+export async function getServerSideProps({ req }) {
+    const session = await getSession({ req })
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/auth/login",
+                permanent: false
+            }
+        }
+    }
+
+    return {
+        props: {
+            session
+        }
+    }
 }
 
 export default Index

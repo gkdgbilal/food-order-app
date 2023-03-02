@@ -4,10 +4,13 @@ import { registerSchema } from '@/schema/register'
 import axios from 'axios'
 import { useFormik } from 'formik'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { toast } from 'react-toastify'
 
 const Register = () => {
+    const { push } = useRouter()
+
     const onSubmit = async (values, actions) => {
         try {
             const res = await axios.post(
@@ -16,11 +19,13 @@ const Register = () => {
             );
             if (res.status === 200) {
                 toast.success("User created successfully");
+                push("/auth/login");
             }
         } catch (err) {
-            toast.error(err.response.data.message);
+            toast.error(err.response.data.error);
             console.log(err);
         }
+        actions.resetForm()
     }
 
     const { values, errors, touched, handleSubmit, handleChange, handleBlur } = useFormik({

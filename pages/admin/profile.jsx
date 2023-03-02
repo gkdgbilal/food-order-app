@@ -5,12 +5,28 @@ import Products from '@/components/admin/Products'
 import Order from '@/components/admin/Order'
 import Category from '@/components/admin/Category'
 import Footer from '@/components/admin/Footer'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+import { toast } from 'react-toastify'
 
 const Profile = () => {
 
     const [tabs, setTabs] = useState(0)
+    const { push } = useRouter()
 
-
+    const logoutAdminAccount = async () => {
+        try {
+            if (confirm('Are you sure you want to logout?')) {
+                const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/admin`);
+                if (res.status === 200) {
+                    push('/admin')
+                    toast.success('Logout successfully')
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className='flex px-10 min-h-[calc(100vh_-_433px)] lg:flex-row flex-col lg:mb-0 mb-10'>
@@ -56,7 +72,7 @@ const Profile = () => {
                     </li>
                     <li
                         className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 4 && 'bg-primary text-white'}`}
-                        onClick={() => setTabs(4)}
+                        onClick={logoutAdminAccount}
                     >
                         <i className="fa-solid fa-right-from-bracket"></i>
                         <button className='ml-1'>Exit</button>
@@ -85,6 +101,21 @@ const Profile = () => {
             }
         </div>
     )
+}
+
+export const getServerSideProps = async (ctx) => {
+    const { token } = ctx.req?.cookies || ""
+    if (token !== process.env.ADMIN_TOKEN) {
+        return {
+            redirect: {
+                destination: '/admin',
+                permanent: false,
+            }
+        }
+    }
+    return {
+        props: {}
+    }
 }
 
 export default Profile

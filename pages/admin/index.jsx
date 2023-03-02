@@ -1,76 +1,102 @@
-import Image from 'next/image'
-import { useState } from 'react'
-import Account from '@/components/profile/Account'
-import Password from '@/components/profile/Password'
-import Order from '@/components/profile/Order'
+import Title from '@/components/ui/Title'
+import Input from '@/components/form/Input'
+import { useFormik } from 'formik'
+import { adminSchema } from '@/schema/admin'
+import Link from 'next/link'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 
 const Index = () => {
+    const { push } = useRouter()
 
-    const [tabs, setTabs] = useState(0)
+    const onSubmit = async (values, actions) => {
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/admin`, values)
+            if (res.status === 200) {
+                actions.resetForm()
+                toast.success("Admin login successfully")
+                push('/admin/profile')
+            }
 
+        } catch (error) {
 
+        }
+    };
+    const { values, errors, touched, handleSubmit, handleChange, handleBlur } =
+        useFormik({
+            initialValues: {
+                username: "",
+                password: "",
+            },
+            onSubmit,
+            validationSchema: adminSchema,
+        });
+
+    const inputs = [
+        {
+            id: 1,
+            name: "username",
+            type: "text",
+            placeholder: "Your Username",
+            value: values.username,
+            errorMessage: errors.username,
+            touched: touched.username,
+        },
+        {
+            id: 2,
+            name: "password",
+            type: "password",
+            placeholder: "Your Password",
+            value: values.password,
+            errorMessage: errors.password,
+            touched: touched.password,
+        },
+    ];
 
     return (
-        <div className='flex px-10 min-h-[calc(100vh_-_433px)] lg:flex-row flex-col lg:mb-0 mb-10'>
-            <div className='lg:w-80 w-100 flex-shrink-0'>
-                <div className='relative flex flex-col items-center px-10 py-5 border border-b-0'>
-                    <Image
-                        src="/images/client2.jpg"
-                        alt="profile"
-                        width={100}
-                        height={100}
-                        className='rounded-full'
-                    />
-                    <b className='text-2xl mt-1'>Bilal Gökdağ</b>
+        <div className="container mx-auto py-3">
+            <form
+                className="flex flex-col items-center my-20 md:w-1/2 w-full mx-auto"
+                onSubmit={handleSubmit}
+            >
+                <Title addClass="text-[40px] mb-6">Admin Login</Title>
+                <div className="flex flex-col gap-y-3 w-full">
+                    {inputs.map((input) => (
+                        <Input
+                            key={input.id}
+                            {...input}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                        />
+                    ))}
                 </div>
-                <ul className='w-full text-center font-semibold'>
-                    <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 0 && 'bg-primary text-white'}`}
-                        onClick={() => setTabs(0)}
-                    >
-                        <i className='fas fa-home'></i>
-                        <button className='ml-1'>Account</button>
-                    </li>
-                    <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 1 && 'bg-primary text-white'}`}
-                        onClick={() => setTabs(1)}
-                    >
-                        <i className="fa-solid fa-key"></i>
-                        <button className='ml-1'>Password</button>
-                    </li>
-                    <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 2 && 'bg-primary text-white'}`}
-                        onClick={() => setTabs(2)}
-                    >
-                        <i className="fa-solid fa-motorcycle"></i>
-                        <button className='ml-1'>Orders</button>
-                    </li>
-                    <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 3 && 'bg-primary text-white'}`}
-                        onClick={() => setTabs(3)}
-                    >
-                        <i className="fa-solid fa-right-from-bracket"></i>
-                        <button className='ml-1'>Exit</button>
-                    </li>
-                </ul>
-            </div>
-            {
-                tabs === 0 && (
-                    <Account />
-                )
-            }
-            {
-                tabs === 1 && (
-                    <Password />
-                )
-            }
-            {
-                tabs === 2 && (
-                    <Order />
-                )
-            }
+                <div className="flex flex-col w-full gap-y-3 mt-6">
+                    <button className="btn-primary">LOGIN</button>
+                    <Link href="/">
+                        <span className="text-sm underline cursor-pointer text-secondary">
+                            Home Page
+                        </span>
+                    </Link>
+                </div>
+            </form>
         </div>
-    )
+    );
+}
+
+export const getServerSideProps = async (ctx) => {
+    const { token } = ctx.req?.cookies || ""
+    if (token === process.env.ADMIN_TOKEN) {
+        return {
+            redirect: {
+                destination: '/admin/profile',
+                permanent: false,
+            }
+        }
+    }
+    return {
+        props: {}
+    }
 }
 
 export default Index

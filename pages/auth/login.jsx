@@ -3,14 +3,26 @@ import Input from '@/components/form/Input'
 import Title from '@/components/ui/Title'
 import { loginSchema } from "@/schema/login"
 import Link from "next/link"
-import { useSession, signIn } from "next-auth/react"
+import {  signIn, getSession } from "next-auth/react"
+import { useRouter } from "next/router"
 
 const Login = () => {
-    const { data: session } = useSession()
-    console.log("session", session)
+    const { push } = useRouter()
+
     const onSubmit = async (values, actions) => {
-        await new Promise((resolve) => setTimeout(resolve, 4000))
-        actions.resetForm()
+        const { email, password } = values;
+        let options = {
+            redirect: false,
+            email,
+            password
+        }
+        try {
+            const res = await signIn("credentials", options)
+            actions.resetForm()
+            push("/profile")
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const { values, errors, touched, handleSubmit, handleChange, handleBlur } = useFormik({
@@ -83,6 +95,25 @@ const Login = () => {
             </form>
         </div>
     )
+}
+
+export async function getServerSideProps({ req }) {
+    const session = await getSession({ req })
+
+    if (session) {
+        return {
+            redirect: {
+                destination: "/profile",
+                permanent: false
+            }
+        }
+    }
+
+    return {
+        props: {
+            session
+        }
+    }
 }
 
 export default Login

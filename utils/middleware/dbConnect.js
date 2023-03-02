@@ -44,6 +44,5 @@ async function dbConnect() {
     return cached.conn
 
 }
-console.log('Connected to db')
 
 export default dbConnect
