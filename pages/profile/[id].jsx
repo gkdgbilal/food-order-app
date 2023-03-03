@@ -5,6 +5,7 @@ import Password from '@/components/profile/Password'
 import Order from '@/components/profile/Order'
 import { getSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import axios from 'axios'
 
 const Index = ({ session }) => {
     const [tabs, setTabs] = useState(0)
@@ -89,7 +90,7 @@ const Index = ({ session }) => {
     )
 }
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, params }) {
     const session = await getSession({ req })
 
     if (!session) {
@@ -100,6 +101,8 @@ export async function getServerSideProps({ req }) {
             }
         }
     }
+
+    const user = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${params.id}`)
 
     return {
         props: {

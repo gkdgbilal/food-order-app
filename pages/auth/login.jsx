@@ -3,7 +3,7 @@ import Input from '@/components/form/Input'
 import Title from '@/components/ui/Title'
 import { loginSchema } from "@/schema/login"
 import Link from "next/link"
-import {  signIn, getSession } from "next-auth/react"
+import { signIn, getSession } from "next-auth/react"
 import { useRouter } from "next/router"
 
 const Login = () => {
@@ -19,7 +19,7 @@ const Login = () => {
         try {
             const res = await signIn("credentials", options)
             actions.resetForm()
-            push("/profile")
+            push("/profile/64008fe156d54616d7f3b3a3")
         } catch (error) {
             console.log(error)
         }
@@ -103,7 +103,7 @@ export async function getServerSideProps({ req }) {
     if (session) {
         return {
             redirect: {
-                destination: "/profile",
+                destination: "/profile/64008fe156d54616d7f3b3a3",
                 permanent: false
             }
         }
