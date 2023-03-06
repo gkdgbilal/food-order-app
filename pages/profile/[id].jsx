@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import Account from '@/components/profile/Account'
 import Password from '@/components/profile/Password'
 import Order from '@/components/profile/Order'
-import { getSession, signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 
-const Index = ({ session }) => {
+const Index = ({ user }) => {
+    const { data: session } = useSession()
     const [tabs, setTabs] = useState(0)
     const { push } = useRouter()
 
@@ -32,13 +33,13 @@ const Index = ({ session }) => {
             <div className='lg:w-80 w-100 flex-shrink-0'>
                 <div className='relative flex flex-col items-center px-10 py-5 border border-b-0'>
                     <Image
-                        src="/images/client2.jpg"
+                        src={user.image || "/images/client2.jpg"}
                         alt="profile"
                         width={100}
                         height={100}
                         className='rounded-full'
                     />
-                    <b className='text-2xl mt-1'>Bilal Gökdağ</b>
+                    <b className='text-2xl mt-1'>{user.fullName}</b>
                 </div>
                 <ul className='w-full text-center font-semibold'>
                     <li
@@ -73,12 +74,16 @@ const Index = ({ session }) => {
             </div>
             {
                 tabs === 0 && (
-                    <Account />
+                    <Account
+                        user={user}
+                    />
                 )
             }
             {
                 tabs === 1 && (
-                    <Password />
+                    <Password
+                        user={user}
+                    />
                 )
             }
             {
@@ -91,22 +96,12 @@ const Index = ({ session }) => {
 }
 
 export async function getServerSideProps({ req, params }) {
-    const session = await getSession({ req })
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/auth/login",
-                permanent: false
-            }
-        }
-    }
-
     const user = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${params.id}`)
 
     return {
         props: {
-            session
+            // session,
+            user: user.data
         }
     }
 }
