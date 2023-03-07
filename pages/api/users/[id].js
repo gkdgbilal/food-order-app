@@ -12,7 +12,6 @@ const handler = async (req, res) => {
     if (method === "GET") {
         try {
             const user = await User.findById(id);
-            console.log('user', user)
             res.status(200).json(user);
         } catch (error) {
             res.status(400).json({ success: false });
@@ -23,11 +22,15 @@ const handler = async (req, res) => {
         try {
             if (req.body.password) {
                 req.body.password = await bcrypt.hash(req.body.password, 10);
-                req.body.passwordConfirm = await bcrypt.hash(req.body.passwordConfirm, 10);
+                req.body.confirmPassword = await bcrypt.hash(
+                    req.body.confirmPassword,
+                    10
+                );
             }
             const users = await User.findByIdAndUpdate(id, req.body, {
                 new: true,
-            })
+            });
+            res.status(200).json(users);
         } catch (error) {
             res.status(400).json({ success: false });
         }

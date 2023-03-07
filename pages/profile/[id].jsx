@@ -14,18 +14,16 @@ const Index = ({ user }) => {
 
     const handleSignOut = () => {
         if (confirm("Are you sure you want to sign out?")) {
-            signOut({
-                redirect: false,
-            })
-            push("/auth/login")
+            signOut({ redirect: false });
+            push("/auth/login");
         }
-    }
+    };
 
     useEffect(() => {
         if (!session) {
-            push("/auth/login")
+            push("/auth/login");
         }
-    }, [session])
+    }, [session]);
 
 
     return (
@@ -97,13 +95,22 @@ const Index = ({ user }) => {
 
 export async function getServerSideProps({ req, params }) {
     const user = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${params.id}`)
+    console.log('user', user.data)
+
+    if (!user) {
+        return {
+            redirect: {
+                destination: "/auth/login",
+                permanent: false,
+            },
+        };
+    }
 
     return {
         props: {
-            // session,
-            user: user.data
-        }
-    }
+            user: user ? user.data : null,
+        },
+    };
 }
 
 export default Index

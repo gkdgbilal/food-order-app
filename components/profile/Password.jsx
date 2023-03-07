@@ -8,12 +8,15 @@ import Title from '../ui/Title'
 const Password = ({ user }) => {
     const onSubmit = async (values, actions) => {
         try {
-            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${user._id}`, values)
-            actions.resetForm()
-        } catch (error) {
-            console.log(error)
+            const res = await axios.put(
+                `${process.env.NEXT_PUBLIC_API_URL}/users/${user._id}`,
+                values
+            );
+            actions.resetForm();
+        } catch (err) {
+            console.log(err);
         }
-    }
+    };
 
     const { values, errors, touched, handleSubmit, handleChange, handleBlur } = useFormik({
         enableReinitialize: true,

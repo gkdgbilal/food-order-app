@@ -13,6 +13,7 @@ const MenuItem = () => {
                             alt="Picture of the author"
                             layout="fill"
                             className="hover:scale-110 transition-all duration-300"
+                            priority
                         />
                     </div>
                 </Link>

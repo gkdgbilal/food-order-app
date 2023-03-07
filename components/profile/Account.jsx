@@ -3,6 +3,7 @@ import Input from '../form/Input'
 import Title from '../ui/Title'
 import { useFormik } from "formik"
 import { profileSchema } from '@/schema/profile'
+import axios from 'axios'
 
 const Account = ({ user }) => {
     const onSubmit = async (values, actions) => {
