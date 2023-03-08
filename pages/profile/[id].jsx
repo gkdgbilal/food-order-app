@@ -15,7 +15,7 @@ const Index = ({ user }) => {
     const handleSignOut = () => {
         if (confirm("Are you sure you want to sign out?")) {
             signOut({ redirect: false });
-            push("/auth/login");
+            // push("/auth/login");
         }
     };
 
