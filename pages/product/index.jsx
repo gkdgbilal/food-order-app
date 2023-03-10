@@ -1,5 +1,5 @@
 import Title from "@/components/ui/Title"
-import Image from "next/image"
+import Image from "next/legacy/image"
 import { useState } from "react";
 import { addProduct } from "@/redux/cartSlice";
 import { useDispatch, useSelector } from "react-redux";

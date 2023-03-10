@@ -1,10 +1,36 @@
-import Image from 'next/image'
-import React from 'react'
+import axios from 'axios'
+import React, { useState } from 'react'
 import { GiCancel } from 'react-icons/gi'
 import OutsideClickHandler from 'react-outside-click-handler'
 import Title from '../ui/Title'
 
 const AddProduct = ({ setIsProductModal }) => {
+    const [file, setFile] = useState()
+    const [imageSrc, setImageSrc] = useState()
+
+    const onChangeHandler = (e) => {
+        const reader = new FileReader()
+
+        reader.onload = (onLoadEvent) => {
+            setImageSrc(onLoadEvent.target.result)
+            setFile(e.target.files[0])
+        }
+
+        reader.readAsDataURL(e.target.files[0])
+    }
+
+    const handleCreate = async () => {
+        const data = new FormData()
+        data.append('file', file)
+        data.append('upload_preset', 'food-ordering')
+
+        try {
+            const uploadResponse = await axios.post("https://api.cloudinary.com/v1_1/https://api.cloudinary.com/v1_1/demo/image/upload/image/upload", data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div className='fixed z-50 top-0 left-0 w-screen h-screen after:content-[""] after:w-screen after:h-screen after:bg-white after:absolute after:top-0 after:left-0 after:opacity-60  grid place-content-center'>
             <OutsideClickHandler
@@ -14,8 +40,23 @@ const AddProduct = ({ setIsProductModal }) => {
                     <div className="relative z-50 md:w-[600px] w-[370px] bg-white border-2 p-10 rounded-3xl">
                         <Title addClass="text-[40px] text-center">Add a New Product</Title>
                         <div className='flex flex-col text-sm mt-6'>
-                            <span className='font-semibold mb-1'>Choose an Image</span>
-                            <input type="file" />
+                            <label className='flex gap-2 items-center'>
+                                <input
+                                    type="file"
+                                    onChange={(e) => onChangeHandler(e)}
+                                    className='hidden'
+                                />
+                                <button className="btn-primary !rounded-none !bg-blue-600 pointer-events-none">Choose an Image</button>
+                                {
+                                    imageSrc && (
+                                        <img
+                                            src={imageSrc}
+                                            alt=""
+                                            className='w-12 h-12 object-cover mt-2'
+                                        />
+                                    )
+                                }
+                            </label>
                         </div>
                         <div className='flex flex-col text-sm mt-4'>
                             <span className='font-semibold mb-[2px]'>Title</span>
@@ -85,7 +126,10 @@ const AddProduct = ({ setIsProductModal }) => {
                             </div>
                         </div>
                         <div className='flex justify-end'>
-                            <button className='btn-primary !bg-success'>Create</button>
+                            <button
+                                className='btn-primary !bg-success'
+                                onClick={handleCreate}
+                            >Create</button>
                         </div>
                         <button
                             className='absolute top-4 right-4'

@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import { useState } from 'react'
 import Password from '@/components/profile/Password'
 import Products from '@/components/admin/Products'
@@ -107,7 +107,7 @@ const Profile = () => {
                 />
             }
             <button
-                className='fixed bottom-10 right-10 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center'
+                className='fixed bottom-10 right-10 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition-all'
                 onClick={() => setIsProductModal(true)}
             >
                 +
