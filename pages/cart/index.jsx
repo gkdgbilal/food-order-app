@@ -42,7 +42,7 @@ const Index = () => {
                                                     <span
                                                         key={extra.id}
                                                     >
-                                                        {extra.name},
+                                                        {extra.text},
                                                     </span>
                                                 ))
                                             }

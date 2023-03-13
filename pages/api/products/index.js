@@ -16,7 +16,7 @@ const handler = async (req, res) => {
     if (method === "POST") {
         try {
             const newProduct = await Product.create(req.body);
-            res.status(200).json({ success: true, data: newProduct });
+            res.status(201).json({ success: true, data: newProduct });
         } catch (error) {
             res.status(400).json({ success: false });
         }
