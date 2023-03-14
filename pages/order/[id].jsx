@@ -1,6 +1,19 @@
+import axios from 'axios';
 import Image from 'next/legacy/image'
 
-const Index = () => {
+const Index = ({ orderItem }) => {
+    const status = orderItem?.status
+
+    const statusClass = (index) => {
+        if (index - status < 1) {
+            return ''
+        } else if (index - status === 1) {
+            return 'animate-pulse'
+        } else {
+            return ''
+        }
+    }
+
     return (
         <div className='min-h-[calc(100vh_-_433px)] flex justify-center items-center flex-col p-10'>
             <div className='flex items-center flex-1 overflow-x-auto w-full max-h-28'>
@@ -17,22 +30,22 @@ const Index = () => {
                         <tr className='bg-secondary border-gray-700 hover:bg-primary transition-all'>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white flex items-center gap-x-1 justify-center'>
                                 <span>
-                                    63107f5559...
+                                    {orderItem?._id.substring(0, 8)}...
                                 </span>
                             </td>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white'>
                                 <span>
-                                    Bilal Gökdağ
+                                    {orderItem?.customer}
                                 </span>
                             </td>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white'>
                                 <span>
-                                    Çarşamba
+                                    {orderItem?.address}
                                 </span>
                             </td>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white'>
                                 <span>
-                                    $20
+                                    ${orderItem?.total}
                                 </span>
                             </td>
                         </tr>
@@ -40,7 +53,7 @@ const Index = () => {
                 </table>
             </div>
             <div className='flex justify-between w-full p-10 bg-primary mt-6'>
-                <div className='relative flex flex-col'>
+                <div className={`relative flex flex-col ${statusClass(0)}`}>
                     <Image
                         src="/images/paid.png"
                         alt="payment"
@@ -49,7 +62,7 @@ const Index = () => {
                     />
                     <span>Payment</span>
                 </div>
-                <div className='relative flex flex-col'>
+                <div className={`relative flex flex-col ${statusClass(1)}`}>
                     <Image
                         src="/images/bake.png"
                         alt="payment"
@@ -58,7 +71,7 @@ const Index = () => {
                     />
                     <span>Preparing</span>
                 </div>
-                <div className='relative flex flex-col'>
+                <div className={`relative flex flex-col ${statusClass(2)}`}>
                     <Image
                         src="/images/bike.png"
                         alt="payment"
@@ -67,7 +80,7 @@ const Index = () => {
                     />
                     <span>On the way</span>
                 </div>
-                <div className='relative flex flex-col'>
+                <div className={`relative flex flex-col ${statusClass(3)}`}>
                     <Image
                         src="/images/delivered.png"
                         alt="payment"
@@ -79,6 +92,18 @@ const Index = () => {
             </div>
         </div>
     )
+}
+
+export const getServerSideProps = async (context) => {
+    const { id } = context.params;
+
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/orders/${id}`)
+
+    return {
+        props: {
+            orderItem: res.data || [],
+        }
+    }
 }
 
 export default Index

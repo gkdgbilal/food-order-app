@@ -3,10 +3,54 @@ import Image from 'next/legacy/image'
 import React from 'react'
 import { useSelector, useDispatch } from "react-redux"
 import { reset } from "@/redux/cartSlice";
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
-const Index = () => {
+const Index = ({ userList }) => {
     const cart = useSelector((state) => state.cart);
     const dispatch = useDispatch();
+    const router = useRouter();
+
+    const { data: session } = useSession();
+
+    const user = userList.find((user) => user.email === session?.user?.email);
+
+    const newOrder = {
+        customer: user?.fullName,
+        address: user?.address ? user?.address : 'No address',
+        total: cart.total,
+        method: 0,
+        status: 0,
+    }
+
+    const createOrder = async () => {
+        try {
+            if (session) {
+                if (confirm('Are you sure to order?')) {
+                    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/orders`, newOrder);
+
+                    if (res.status === 201) {
+                        router.push(`/order/${res.data.data._id}`);
+                        dispatch(reset());
+                        toast.success('Order created successfully!', {
+                            autoClose: 1000,
+                        });
+                    }
+                }
+            } else {
+                toast.error('Please login first.', {
+                    autoClose: 1000,
+                })
+            }
+        } catch (error) {
+            toast.error('Please login first.', {
+                autoClose: 1000,
+            })
+            console.log(error);
+        }
+    }
 
     return (
         <div className='min-h-[calc(100vh_-_433px)]'>
@@ -25,11 +69,11 @@ const Index = () => {
                             {
                                 cart.products.map((product, index) => (
                                     <tr
-                                        key={product.id}
+                                        key={product._id}
                                         className='bg-secondary border-gray-700 hover:bg-primary transition-all'>
                                         <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white flex items-center gap-x-1 justify-center'>
                                             <Image
-                                                src="/images/f1.png"
+                                                src={product.image}
                                                 alt="Picture of the author"
                                                 width={50}
                                                 height={50}
@@ -40,7 +84,7 @@ const Index = () => {
                                             {
                                                 product.extras.map((extra) => (
                                                     <span
-                                                        key={extra.id}
+                                                        key={extra._id}
                                                     >
                                                         {extra.text},
                                                     </span>
@@ -73,7 +117,7 @@ const Index = () => {
                     <div>
                         <button
                             className="btn-primary mt-4 md:w-auto w-52"
-                            onClick={() => dispatch(reset())}
+                            onClick={createOrder}
                         >
                             CHECKOUT NOW
                         </button>
@@ -82,6 +126,15 @@ const Index = () => {
             </div>
         </div>
     )
+}
+
+export const getServerSideProps = async (context) => {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`)
+    return {
+        props: {
+            userList: res.data.data ? res.data.data : null,
+        },
+    }
 }
 
 export default Index

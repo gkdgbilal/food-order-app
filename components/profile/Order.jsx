@@ -1,7 +1,46 @@
-import React from 'react'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 import Title from '../ui/Title'
 
 const Order = () => {
+    const [orders, setOrders] = useState([])
+    const [currentUser, setCurrentUser] = useState([])
+    const status = ["Preparing", "On the way", "Delivered"]
+    const { data: session } = useSession()
+    const getOrders = async () => {
+        try {
+            const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_URL}/orders`
+            );
+            setOrders(
+                res.data.data.filter((order) => order.customer === currentUser?.fullName)
+            );
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const getCurrentUser = async () => {
+        try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`)
+            setCurrentUser(
+                res.data.data.filter(user => user.email === session?.user?.email)[0]
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getOrders()
+    }, [currentUser])
+
+    useEffect(() => {
+        getCurrentUser()
+    }, [session])
+
+    console.log(orders)
     return (
         <div className="lg:p-8 flex-1 lg:mt-0 mt-5">
             <Title addClass="text-[40px]">Password</Title>
@@ -27,23 +66,30 @@ const Order = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className='bg-secondary border-gray-700 hover:bg-primary transition-all'>
-                            <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white flex items-center gap-x-1 justify-center">
-                                <span>63107...</span>
-                            </td>
-                            <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                Adana
-                            </td>
-                            <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                01-09-2022
-                            </td>
-                            <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                $18
-                            </td>
-                            <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                preparing
-                            </td>
-                        </tr>
+                        {
+                            orders.map(order => (
+                                <tr
+                                    className='bg-secondary border-gray-700 hover:bg-primary transition-all'
+                                    key={order._id}
+                                >
+                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white flex items-center gap-x-1 justify-center">
+                                        <span>{order._id.substring(0, 8)}...</span>
+                                    </td>
+                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                        {order.address}
+                                    </td>
+                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                        {new Date(order.createdAt).toLocaleDateString()}
+                                    </td>
+                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                        $ {order.total}
+                                    </td>
+                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                        {status[order.status]}
+                                    </td>
+                                </tr>
+                            ))
+                        }
                     </tbody>
                 </table>
             </div>
