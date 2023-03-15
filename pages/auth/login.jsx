@@ -20,7 +20,7 @@ const Login = () => {
             const res = await signIn("credentials", options);
             actions.resetForm();
         } catch (err) {
-            console.log('err');
+            console.log(err);
         }
     };
 

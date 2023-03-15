@@ -71,6 +71,7 @@ const Products = () => {
                                             width={50}
                                             height={50}
                                             alt={product.title}
+                                            objectFit='contain'
                                         />
                                     </td>
                                     <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">

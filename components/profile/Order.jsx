@@ -40,7 +40,6 @@ const Order = () => {
         getCurrentUser()
     }, [session])
 
-    console.log(orders)
     return (
         <div className="lg:p-8 flex-1 lg:mt-0 mt-5">
             <Title addClass="text-[40px]">Password</Title>
