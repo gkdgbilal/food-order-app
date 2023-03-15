@@ -1,27 +1,46 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Input from '../form/Input'
 import Title from '../ui/Title'
 import { useFormik } from "formik"
 import { footerSchema } from '@/schema/footer'
+import axios from 'axios'
 
 const Footer = () => {
-    const [linkAddress, setLinkAddress] = useState("")
-    const [iconName, setIconName] = useState("")
-    const [icons, setIcons] = useState(["fa-brands fa-facebook-f", "fa-brands fa-twitter", "fa-brands fa-linkedin"])
+    const [linkAddress, setLinkAddress] = useState("https://")
+    const [iconName, setIconName] = useState("fa-brands fa-")
+    const [socialMediaLinks, setSocialMediaLinks] = useState([])
+    const [footerData, setFooterData] = useState([])
 
     const onSubmit = async (values, actions) => {
-        await new Promise((resolve) => setTimeout(resolve, 4000))
-        actions.resetForm()
+        try {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/footer/${footerData._id}`, {
+                location: values.location,
+                email: values.email,
+                phoneNumber: values.phoneNumber,
+                description: values.description,
+                openingHours: {
+                    day: values.day,
+                    hour: values.time,
+                },
+                socialMedia: socialMediaLinks
+            })
+            if (res.status === 201) {
+                toast.success("Footer updated successfully");
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const { values, errors, touched, handleSubmit, handleChange, handleBlur } = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            location: "",
-            email: "",
-            phoneNumber: "",
-            description: "",
-            day: "",
-            time: "",
+            location: footerData?.location,
+            email: footerData?.email,
+            phoneNumber: footerData?.phoneNumber,
+            description: footerData?.description,
+            day: footerData?.openingHours?.day,
+            time: footerData?.openingHours?.hour,
         },
         onSubmit,
         validationSchema: footerSchema
@@ -84,6 +103,31 @@ const Footer = () => {
         }
     ]
 
+    const getFooterData = async () => {
+        try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/footer`)
+            setFooterData(res.data.data[0])
+            setSocialMediaLinks(res.data.data[0].socialMedia)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleCreate = (e) => {
+        setSocialMediaLinks([
+            ...footerData?.socialMedia, {
+                icon: iconName,
+                link: linkAddress
+            }
+        ])
+        setLinkAddress("https://")
+        setIconName("fa-brands fa-")
+    }
+
+    useEffect(() => {
+        getFooterData()
+    }, [])
+
     return (
         <form
             className='lg:p-8 flex-1 lg:mt-0 mt-5'
@@ -107,7 +151,7 @@ const Footer = () => {
             <div className='mt-4 flex justify-between md:items-center md:flex-row flex-col gap-4'>
                 <div className='flex items-center gap-4'>
                     <Input
-                        value="https://"
+                        value={linkAddress}
                         placeholder="Link Address"
                         onChange={(e) => setLinkAddress(e.target.value)}
                     />
@@ -119,21 +163,21 @@ const Footer = () => {
                     <button
                         className="btn-primary"
                         type='button'
-                        onClick={() => iconName && setIcons([...icons, `${iconName}`])}
+                        onClick={handleCreate}
                     >
                         Add
                     </button>
                 </div>
                 <ul className='flex items-center gap-4'>
                     {
-                        icons.map((icon, index) => (
-                            <li key={index}>
-                                <i className={`${icon} text-2xl`}></i>
+                        socialMediaLinks?.map((item, index) => (
+                            <li key={index} className="flex items-center">
+                                <i className={`${item.icon} text-2xl`}></i>
                                 <button
                                     className='text-danger'
-                                    onClick={
-                                        () => setIcons((prev) => prev.filter((ic) => ic !== icon))
-                                    }
+                                    onClick={() => {
+                                        setSocialMediaLinks((prev) => prev.filter((item, i) => i !== index));
+                                    }}
                                 >
                                     <i className="fa-solid fa-trash text-xl ml-2" />
                                 </button>
