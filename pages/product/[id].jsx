@@ -32,6 +32,7 @@ const Index = ({ foodItem }) => {
 
     const cart = useSelector((state) => state.cart);
     const dispatch = useDispatch();
+    const findCart = cart.products.find((item) => item._id === foodItem?._id);
 
     const handleSize = (index) => {
         const difference = prices[index] - prices[size];
@@ -144,6 +145,7 @@ const Index = ({ foodItem }) => {
                 <button
                     onClick={handleClick}
                     className="btn-primary"
+                    disabled={findCart}
                 >
                     Add to Cart
                 </button>

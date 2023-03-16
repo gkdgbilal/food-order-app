@@ -45,35 +45,35 @@ const Profile = () => {
                 </div>
                 <ul className='w-full text-center font-semibold'>
                     <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 0 && 'bg-primary text-white'}`}
+                        className={`border  w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 0 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(0)}
                     >
                         <i className="fa-solid fa-utensils"></i>
                         <button className='ml-1'>Products</button>
                     </li>
                     <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 1 && 'bg-primary text-white'}`}
+                        className={`border border-t-0  w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 1 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(1)}
                     >
                         <i className="fa-solid fa-motorcycle"></i>
                         <button className='ml-1'>Orders</button>
                     </li>
                     <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 2 && 'bg-primary text-white'}`}
+                        className={`border border-t-0  w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 2 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(2)}
                     >
                         <i className="fa-solid fa-braille"></i>
                         <button className='ml-1'>Categories</button>
                     </li>
                     <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 3 && 'bg-primary text-white'}`}
+                        className={`border border-t-0  w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 3 && 'bg-primary text-white'}`}
                         onClick={() => setTabs(3)}
                     >
                         <i className="fa-regular fa-window-maximize"></i>
                         <button className='ml-1'>Footer</button>
                     </li>
                     <li
-                        className={`border w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 4 && 'bg-primary text-white'}`}
+                        className={`border border-t-0 w-full p-3 cursor-pointer hover:bg-primary hover:text-white transition-all ${tabs === 4 && 'bg-primary text-white'}`}
                         onClick={logoutAdminAccount}
                     >
                         <i className="fa-solid fa-right-from-bracket"></i>

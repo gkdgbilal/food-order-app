@@ -5,6 +5,7 @@ import MenuItem from './MenuItem'
 const MenuWrapper = ({ categoryList, productList }) => {
     const [activeCategory, setActiveCategory] = useState(0)
     const [filteredProduct, setFilteredProduct] = useState([])
+    const [productLimit, setProductLimit] = useState(3)
 
     useEffect(() => {
         setFilteredProduct(
@@ -27,7 +28,10 @@ const MenuWrapper = ({ categoryList, productList }) => {
                             <button
                                 key={category._id}
                                 className={`px-6 py-2 rounded-3xl ${index === activeCategory && 'bg-secondary text-white'}`}
-                                onClick={() => setActiveCategory(index)}
+                                onClick={() => {
+                                    setActiveCategory(index)
+                                    setProductLimit(3)
+                                }}
                             >
                                 {category.title}
                             </button>
@@ -37,13 +41,23 @@ const MenuWrapper = ({ categoryList, productList }) => {
             </div>
             <div className='mt-8 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 min-h-[400px]'>
                 {
-                    filteredProduct && filteredProduct.map((product) => (
-                        <MenuItem
-                            key={product._id}
-                            product={product}
-                        />
-                    ))
+                    filteredProduct && filteredProduct
+                        .slice(0, 3)
+                        .map((product) => (
+                            <MenuItem
+                                key={product._id}
+                                product={product}
+                            />
+                        ))
                 }
+            </div>
+            <div className='flex items-center justify-center w-full mt-8'>
+                <button
+                    className='btn-primary'
+                    onClick={() => setProductLimit(productLimit + 3)}
+                >
+                    View More
+                </button>
             </div>
         </div>
     )

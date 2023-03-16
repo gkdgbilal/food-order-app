@@ -29,6 +29,10 @@ body {
   @apply !m-0 !mt-6;
 }
 
+.slick-dots li{
+  @apply !m-0 ;
+}
+
 .loader {
   width: 48px;
   height: 48px;
