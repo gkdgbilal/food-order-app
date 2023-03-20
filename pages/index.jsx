@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Home from '@/pages/Home'
+import Home from './Home'
 import axios from 'axios'
 
 export default function Index({ categoryList, productList }) {
