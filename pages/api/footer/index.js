@@ -1,5 +1,10 @@
 import dbConnect from "@/utils/middleware/dbConnect";
 import Footer from "@/models/Footer";
+import Cors from "cors";
+
+const cors = Cors({
+    methods: ["POST", "GET", "HEAD"],
+});
 
 const handler = async (req, res) => {
     await dbConnect();
@@ -24,4 +29,18 @@ const handler = async (req, res) => {
 
 };
 
-export default handler;
+function runMiddleware(req, res, fn) {
+    return new Promise((resolve, reject) => {
+        fn(req, res, (result) => {
+            if (result instanceof Error) {
+                return reject(result);
+            }
+            return resolve(result);
+        });
+    });
+}
+
+export default async (req, res) => {
+    await runMiddleware(req, res, cors);
+    handler(req, res);
+};
