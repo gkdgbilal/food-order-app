@@ -1,7 +1,10 @@
 import dbConnect from "@/utils/middleware/dbConnect";
 import Footer from "@/models/Footer";
+import cors from "cors";
 
 const handler = async (req, res) => {
+    await cors(req, res);
+
     await dbConnect();
     const { method } = req;
 

@@ -7,6 +7,8 @@ import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
     const { data: session } = useSession();
@@ -18,6 +20,10 @@ const Login = () => {
         let options = { redirect: false, email, password };
         try {
             const res = await signIn("credentials", options);
+            if (res.error) {
+                toast.error(res.error);
+                return;
+            }
             actions.resetForm();
         } catch (err) {
             console.log(err);
@@ -97,9 +103,17 @@ const Login = () => {
                         type="button"
                         onClick={() => signIn("github")}
                     >
-                        <i className="fa fa-github mr-2 text-lg"></i>
+                        <i className="fa-brands fa-github mr-2 text-lg"></i>
                         GITHUB
                     </button>
+                    {/* <button
+                        className="btn-primary !bg-white !text-secondary shadow-md flex items-center justify-center hover:!bg-gray-100"
+                        type="button"
+                        onClick={() => signIn("google")}
+                    >
+                        <FcGoogle className="mr-2 text-xl" />
+                        Sign in with GOOGLE
+                    </button> */}
                     <Link href="/auth/register">
                         <span className="text-sm underline cursor-pointer text-secondary">
                             Do you no have a account?
