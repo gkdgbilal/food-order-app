@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ["res.cloudinary.com"]
   },
+  resolve: {
+    extensions: ['.js', '.jsx']
+  }
 }
 
 module.exports = nextConfig
