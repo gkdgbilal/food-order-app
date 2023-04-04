@@ -17,6 +17,14 @@ const nextConfig = {
         ]
       }
     ]
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://nextjsfood-order-app.vercel.app/api/:path*"
+      }
+    ]
   }
 }
 
