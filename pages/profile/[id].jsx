@@ -7,7 +7,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 
-const Index = ({ user }) => {
+const Index = ({ user, socket }) => {
     const { data: session } = useSession()
     const [tabs, setTabs] = useState(0)
     const { push } = useRouter()
@@ -86,7 +86,9 @@ const Index = ({ user }) => {
             }
             {
                 tabs === 2 && (
-                    <Order />
+                    <Order
+                        socket={socket}
+                    />
                 )
             }
         </div>

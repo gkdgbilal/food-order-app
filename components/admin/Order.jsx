@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Title from '../ui/Title'
 
-const Order = () => {
+const Order = ({ socket }) => {
     const [orders, setOrders] = useState([])
     const status = ["Preparing", "On the way", "Delivered"]
 
@@ -15,12 +15,20 @@ const Order = () => {
         }
     }
 
+    socket.on('get-create-order', (data) => {
+        setOrders([data, ...orders])
+    })
+
     const handleStatus = async (id) => {
         const item = orders.find(order => order._id === id)
         const currentStatus = item.status
 
         try {
             const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/orders/${id}`, {
+                status: currentStatus + 1
+            })
+            await socket.emit('update-order', {
+                ...item,
                 status: currentStatus + 1
             })
             getOrders()
@@ -86,7 +94,7 @@ const Order = () => {
                                         </td>
                                         <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
                                             <button
-                                                className='btn-primary !bg-success'
+                                                className='btn-primary !bg-success click:bg-white hover:scale-105'
                                                 onClick={() => handleStatus(order._id)}
                                                 disabled={order.status > 1}
                                             >

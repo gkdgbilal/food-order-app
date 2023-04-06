@@ -1,11 +1,14 @@
 import { addProduct } from "@/redux/cartSlice"
+import useLocalStorage from "@/utils/hooks/useLocalStorage"
 import Image from "next/legacy/image"
 import Link from "next/link"
+import { useEffect } from "react"
 import { RiShoppingCart2Fill } from "react-icons/ri"
 import { useSelector, useDispatch } from "react-redux"
 
 const MenuItem = ({ product }) => {
     const cart = useSelector((state) => state.cart)
+    const [cartItems, setCartItems] = useLocalStorage("cartItems", cart)
 
     const findCartItem = cart.products.find((item) => item._id === product._id)
 
@@ -23,6 +26,10 @@ const MenuItem = ({ product }) => {
             quantity: 1
         }))
     }
+
+    useEffect(() => {
+        setCartItems(cart)
+    }, [cart])
 
     return (
         <div className="bg-secondary rounded-3xl">

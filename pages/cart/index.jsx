@@ -7,9 +7,11 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import useLocalStorage from '@/utils/hooks/useLocalStorage';
 
-const Index = ({ userList }) => {
+const Index = ({ userList, socket }) => {
     const cart = useSelector((state) => state.cart);
+
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -36,6 +38,10 @@ const Index = ({ userList }) => {
                         dispatch(reset());
                         toast.success('Order created successfully!', {
                             autoClose: 1000,
+                        });
+                        await socket.emit('create-order', {
+                            ...newOrder,
+                            _id: res.data.data._id,
                         });
                     }
                 }

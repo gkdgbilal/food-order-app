@@ -10,8 +10,7 @@ import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import AddProduct from '@/components/admin/AddProduct'
 
-const Profile = () => {
-
+const Profile = ({ socket }) => {
     const [tabs, setTabs] = useState(0)
     const [isProductModal, setIsProductModal] = useState(false)
     const { push } = useRouter()
@@ -88,7 +87,9 @@ const Profile = () => {
             }
             {
                 tabs === 1 && (
-                    <Order />
+                    <Order 
+                        socket={socket}
+                    />
                 )
             }
             {

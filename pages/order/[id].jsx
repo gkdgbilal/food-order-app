@@ -1,8 +1,10 @@
 import axios from 'axios';
 import Image from 'next/legacy/image'
+import { useEffect, useState } from 'react';
 
-const Index = ({ orderItem }) => {
-    const status = orderItem?.status
+const Index = ({ orderItem, socket }) => {
+    const [order, setOrder] = useState(orderItem);
+    let status = order?.status
 
     const statusClass = (index) => {
         if (index - status < 1) {
@@ -13,6 +15,12 @@ const Index = ({ orderItem }) => {
             return ''
         }
     }
+
+    socket.on('get-order', (data) => {
+        if (data._id === order?._id) {
+            setOrder(data)
+        }
+    })
 
     return (
         <div className='min-h-[calc(100vh_-_433px)] flex justify-center items-center flex-col p-10'>
@@ -30,22 +38,22 @@ const Index = ({ orderItem }) => {
                         <tr className='bg-secondary border-gray-700 hover:bg-primary transition-all'>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white flex items-center gap-x-1 justify-center'>
                                 <span>
-                                    {orderItem?._id.substring(0, 8)}...
+                                    {order?._id.substring(0, 8)}...
                                 </span>
                             </td>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white'>
                                 <span>
-                                    {orderItem?.customer}
+                                    {order?.customer}
                                 </span>
                             </td>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white'>
                                 <span>
-                                    {orderItem?.address}
+                                    {order?.address}
                                 </span>
                             </td>
                             <td className='py-4 px-6 font-medium whitespace-nowrap hover:text-white'>
                                 <span>
-                                    ${orderItem?.total}
+                                    ${order?.total}
                                 </span>
                             </td>
                         </tr>

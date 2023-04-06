@@ -2,8 +2,9 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Title from '../ui/Title'
+import Link from 'next/link'
 
-const Order = () => {
+const Order = ({ socket }) => {
     const [orders, setOrders] = useState([])
     const [currentUser, setCurrentUser] = useState([])
     const status = ["Preparing", "On the way", "Delivered"]
@@ -40,6 +41,18 @@ const Order = () => {
         getCurrentUser()
     }, [session])
 
+    socket.on('get-order', (data) => {
+        setOrders((prev) => {
+            try {
+                const vCard = prev.find((order) => order._id === data._id)
+                vCard.status = data?.status
+            } catch (error) {
+                console.log(error)
+            }
+            return [...prev]
+        })
+    })
+
     return (
         <div className="lg:p-8 flex-1 lg:mt-0 mt-5">
             <Title addClass="text-[40px]">Password</Title>
@@ -66,28 +79,33 @@ const Order = () => {
                     </thead>
                     <tbody>
                         {
-                            orders.map(order => (
-                                <tr
-                                    className='bg-secondary border-gray-700 hover:bg-primary transition-all'
-                                    key={order._id}
-                                >
-                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white flex items-center gap-x-1 justify-center">
-                                        <span>{order._id.substring(0, 8)}...</span>
-                                    </td>
-                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                        {order.address}
-                                    </td>
-                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                        {new Date(order.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                        $ {order.total}
-                                    </td>
-                                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                                        {status[order.status]}
-                                    </td>
-                                </tr>
-                            ))
+                            orders &&
+                            orders
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                .map(order => (
+                                    <tr
+                                        className='bg-secondary border-gray-700 hover:bg-primary transition-all'
+                                        key={order._id}
+                                    >
+                                        <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white flex items-center gap-x-1 justify-center">
+                                            <Link href={`/order/${order._id}`}>
+                                                <span>{order._id.substring(0, 8)}...</span>
+                                            </Link>
+                                        </td>
+                                        <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                            {order.address}
+                                        </td>
+                                        <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                            {new Date(order.createdAt).toLocaleDateString()}
+                                        </td>
+                                        <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                            $ {order.total}
+                                        </td>
+                                        <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                                            {status[order.status]}
+                                        </td>
+                                    </tr>
+                                ))
                         }
                     </tbody>
                 </table>

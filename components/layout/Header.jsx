@@ -12,7 +12,6 @@ const Header = () => {
     const [isMenuModal, setIsMenuModal] = useState(false)
     const cart = useSelector((state) => state.cart)
 
-
     const router = useRouter()
 
     return (
