@@ -19,7 +19,7 @@ Router.events.on("routeChangeStart", () => nProgress.start());
 Router.events.on("routeChangeComplete", () => nProgress.done());
 Router.events.on("routeChangeError", () => nProgress.done());
 
-const socket = io('http://localhost:3000', {
+const socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL, {
   transports: ['websocket'],
 })
 
